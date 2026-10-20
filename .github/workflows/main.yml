@@ -14,10 +14,16 @@ jobs:
           distribution: 'temurin'
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
-      - name: Build APK
+      - name: Make gradlew executable
         run: |
+          echo "Creating gradle wrapper..."
+          gradle wrapper --gradle-version 8.5 || true
           chmod +x gradlew || true
-          if [ -f gradlew ]; then ./gradlew assembleDebug; else gradle wrapper && ./gradlew assembleDebug; fi
+          ls -la
+      - name: Build with Gradle Wrapper
+        uses: gradle/gradle-build-action@v3
+        with:
+          arguments: assembleDebug
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
